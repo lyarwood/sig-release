@@ -9,7 +9,7 @@ container runtime. Its git reads work offline once the tags are available.
 
 ## Release updates
 
-After each stable release, including patch releases:
+After each tracked release, including prereleases and patch releases:
 
 1. Fetch the published release tags in a KubeVirt checkout:
 
@@ -17,11 +17,14 @@ After each stable release, including patch releases:
    git -C ../kubevirt fetch origin --tags
    ```
 
-2. Update `releases/userspace-releases.json` with the latest exact stable tag for
-   each supported minor release. Add a series at GA and remove it when support
-   ends. Pre-release tags, duplicate series, branches, and floating references
-   are rejected. The list is maintained by SIG Release; the generator does not
-   infer support status from the number or age of tags.
+2. Update `releases/userspace-releases.json` with the latest exact tag for each
+   tracked minor release. Add a series at GA and remove it when support ends.
+   A prerelease snapshot may be added before GA; replace it with the GA tag when
+   published. Tags use `vMAJOR.MINOR.PATCH`, optionally followed by `-alpha.N`,
+   `-beta.N`, or `-rc.N`. Prerelease rows are explicitly labeled and do not imply
+   stable support. Duplicate series, branches, and floating references are
+   rejected. The list is maintained by SIG Release; the generator does not infer
+   support status from the number or age of tags.
 
 3. From the sig-release repository root, generate and commit the manifest and
    matrix together:

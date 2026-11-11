@@ -82,12 +82,28 @@ func TestReleaseSnapshots(t *testing.T) {
 		t.Fatalf("releases sorted incorrectly: %v", tags)
 	}
 	for _, invalid := range []string{
-		`[]`, `null`, `["v1.9"]`, `["release-1.9"]`, `["v1.9.0-rc.0"]`,
+		`[]`, `null`, `["v1.9"]`, `["release-1.9"]`, `["v1.9.0-rc"]`,
+		`["v1.9.0-rc.x"]`, `["v1.9.0-preview.0"]`, `["v1.9.0-rc.0+build"]`,
+		`["v1.10.0-rc.0", "v1.10.0"]`, `["v1.10.0-beta.0", "v1.10.0-rc.0"]`,
 		`["v1.9.0", "v1.9.1"]`, `["v1.9.1", "v1.9.1"]`, `{"tag":"v1.9.1"}`,
 	} {
 		t.Run(invalid, func(t *testing.T) {
 			if _, err := parseReleases([]byte(invalid)); err == nil {
 				t.Fatal("accepted invalid release list")
+			}
+		})
+	}
+}
+
+func TestPrereleaseSnapshots(t *testing.T) {
+	for _, tag := range []string{"v1.10.0-alpha.0", "v1.10.0-beta.0", "v1.10.0-rc.0"} {
+		t.Run(tag, func(t *testing.T) {
+			releases, err := parseReleases([]byte(`["v1.9.1", "` + tag + `"]`))
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(releases) != 2 || releases[0].tag != tag || releases[1].tag != "v1.9.1" {
+				t.Fatalf("releases sorted incorrectly: %+v", releases)
 			}
 		})
 	}
@@ -177,12 +193,13 @@ func TestGenerateFromTagAndCheckWithoutWriting(t *testing.T) {
 	git("add", ".")
 	git("-c", "user.name=Test", "-c", "user.email=test@example.com", "-c", "commit.gpgsign=false", "commit", "-m", "release dependencies")
 	git("-c", "tag.gpgsign=false", "tag", "v1.9.1")
+	git("-c", "tag.gpgsign=false", "tag", "v1.10.0-rc.0")
 	commit := git("rev-parse", "HEAD")
 	// Dirty checkout data must not change the release inventory.
 	write(filepath.Join(repo, "rpm", "BUILD.bazel"), "invalid working tree")
 	dir := t.TempDir()
 	manifest, output := filepath.Join(dir, "releases.json"), filepath.Join(dir, "matrix.md")
-	write(manifest, `["v1.9.1"]`)
+	write(manifest, `["v1.9.1", "v1.10.0-rc.0"]`)
 	if err := run(repo, manifest, output, false); err != nil {
 		t.Fatal(err)
 	}
@@ -192,6 +209,11 @@ func TestGenerateFromTagAndCheckWithoutWriting(t *testing.T) {
 	}
 	if !strings.Contains(string(generated), "`17:10.1.0-20.el9`") || !strings.Contains(string(generated), "/blob/"+commit+"/rpm/BUILD.bazel") {
 		t.Fatalf("matrix lacks tagged versions or commit provenance: %s", generated)
+	}
+	prereleaseLabel := "[v1.10.0-rc.0](https://github.com/kubevirt/kubevirt/releases/tag/v1.10.0-rc.0) (prerelease)"
+	stableLabel := "[v1.9.1](https://github.com/kubevirt/kubevirt/releases/tag/v1.9.1)"
+	if strings.Count(string(generated), prereleaseLabel+" |") != 2 || strings.Count(string(generated), stableLabel+" |") != 2 {
+		t.Fatalf("release rows have incorrect prerelease labels: %s", generated)
 	}
 	if err := run(repo, manifest, output, true); err != nil {
 		t.Fatal(err)

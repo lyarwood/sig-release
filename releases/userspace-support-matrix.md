@@ -2,8 +2,9 @@
 # KubeVirt release userspace and host-kernel support matrix
 
 This table records the userspace bundled in the default upstream `virt-launcher`
-build for each tracked release. Each row is an exact patch-release snapshot;
-component versions can change between patch releases. The tracked tags are listed
+build for each tracked release. Each row is an exact release-tag snapshot;
+component versions can change between releases. Prerelease snapshots are labeled
+and can change before GA. The tracked tags are listed
 in [userspace-releases.json](userspace-releases.json). See the
 [Kubernetes support matrix](k8s-support-matrix.md) for release lifecycle information;
 inclusion here does not extend a release's support period.
@@ -34,6 +35,9 @@ To refresh this generated document, follow the
 
 | KubeVirt release | Architecture | Base userspace | Recommended host kernel | libvirt | QEMU | edk2 | SeaBIOS | swtpm | passt | virtiofsd |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| [v1.10.0-rc.0](https://github.com/kubevirt/kubevirt/releases/tag/v1.10.0-rc.0) (prerelease) | x86_64 | CentOS Stream 9 | CentOS Stream 9 / EL 9 distribution kernel | `0:11.10.0-19.el9` | `17:10.1.0-25.el9` | `0:20241117-8.el9` | `0:1.16.3-6.el9` | `0:0.8.0-2.el9` | `0:0^20260728.gf8df3f1-1.el9` | `0:1.13.0-1.el9` |
+| [v1.10.0-rc.0](https://github.com/kubevirt/kubevirt/releases/tag/v1.10.0-rc.0) (prerelease) | aarch64 | CentOS Stream 9 | CentOS Stream 9 / EL 9 distribution kernel | `0:11.10.0-19.el9` | `17:10.1.0-25.el9` | `0:20241117-8.el9` | N/A | `0:0.8.0-2.el9` | `0:0^20260728.gf8df3f1-1.el9` | `0:1.13.0-1.el9` |
+| [v1.10.0-rc.0](https://github.com/kubevirt/kubevirt/releases/tag/v1.10.0-rc.0) (prerelease) | s390x | CentOS Stream 9 | CentOS Stream 9 / EL 9 distribution kernel | `0:11.10.0-19.el9` | `17:10.1.0-25.el9` | N/A | N/A | `0:0.8.0-2.el9` | `0:0^20260728.gf8df3f1-1.el9` | `0:1.13.0-1.el9` |
 | [v1.9.1](https://github.com/kubevirt/kubevirt/releases/tag/v1.9.1) | x86_64 | CentOS Stream 9 | CentOS Stream 9 / EL 9 distribution kernel | `0:11.10.0-19.el9` | `17:10.1.0-20.el9` | `0:20241117-8.el9` | `0:1.16.3-4.el9` | `0:0.8.0-2.el9` | `0:0^20260611.ga9c61ff-1.el9` | `0:1.13.0-1.el9` |
 | [v1.9.1](https://github.com/kubevirt/kubevirt/releases/tag/v1.9.1) | aarch64 | CentOS Stream 9 | CentOS Stream 9 / EL 9 distribution kernel | `0:11.10.0-19.el9` | `17:10.1.0-20.el9` | `0:20241117-8.el9` | N/A | `0:0.8.0-2.el9` | `0:0^20260611.ga9c61ff-1.el9` | `0:1.13.0-1.el9` |
 | [v1.9.1](https://github.com/kubevirt/kubevirt/releases/tag/v1.9.1) | s390x | CentOS Stream 9 | CentOS Stream 9 / EL 9 distribution kernel | `0:11.10.0-19.el9` | `17:10.1.0-20.el9` | N/A | N/A | `0:0.8.0-2.el9` | `0:0^20260611.ga9c61ff-1.el9` | `0:1.13.0-1.el9` |
@@ -46,6 +50,7 @@ To refresh this generated document, follow the
 
 ## Sources
 
+- v1.10.0-rc.0: [RPM dependencies](https://github.com/kubevirt/kubevirt/blob/69de3fcc847ae4a65faff3dcfce55ae433641060/rpm/BUILD.bazel), [default build configuration](https://github.com/kubevirt/kubevirt/blob/69de3fcc847ae4a65faff3dcfce55ae433641060/.bazelrc) (commit `69de3fcc847ae4a65faff3dcfce55ae433641060`).
 - v1.9.1: [RPM dependencies](https://github.com/kubevirt/kubevirt/blob/c3d19093f9c7b843b3879b18dc088911c081c39e/rpm/BUILD.bazel), [default build configuration](https://github.com/kubevirt/kubevirt/blob/c3d19093f9c7b843b3879b18dc088911c081c39e/.bazelrc) (commit `c3d19093f9c7b843b3879b18dc088911c081c39e`).
 - v1.8.4: [RPM dependencies](https://github.com/kubevirt/kubevirt/blob/dfaa398f086692d19e01be21d83a01036e07815f/rpm/BUILD.bazel), [default build configuration](https://github.com/kubevirt/kubevirt/blob/dfaa398f086692d19e01be21d83a01036e07815f/.bazelrc) (commit `dfaa398f086692d19e01be21d83a01036e07815f`).
 - v1.7.4: [RPM dependencies](https://github.com/kubevirt/kubevirt/blob/2468b19f25de2991433ba44e45419b2c0eaec20a/rpm/BUILD.bazel), [default build configuration](https://github.com/kubevirt/kubevirt/blob/2468b19f25de2991433ba44e45419b2c0eaec20a/.bazelrc) (commit `2468b19f25de2991433ba44e45419b2c0eaec20a`).
